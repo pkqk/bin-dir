@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+path=$1
+modules=`git submodule status ${path} | cut -d' ' -f3`
+
+for m in $modules
+do
+  echo $m
+  pushd $m
+  git checkout master
+  git pull origin master
+  popd
+  git add $m
+done

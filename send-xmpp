@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+%w(xmpp4r-simple yaml).map {|lib| require lib}
+
+def xmpp_send(person,msg)
+  trikebot.deliver(person,msg)
+  sleep 1
+rescue StandardError => e
+  puts e.message
+  exit 1
+end
+
+def trikebot
+  unless @trikebot
+    config = YAML.load(File.open("#{ENV['HOME']}/.xmpp").read)
+    @trikebot = Jabber::Simple.new(config['account'],config['password'])
+  end
+  @trikebot.reconnect unless @trikebot.connected?
+  return @trikebot
+end
+
+if $0 == __FILE__
+  case ARGV.length
+  when 2
+    person,msg = ARGV
+    msg = $stdin.read if msg == '-'
+  when 1
+    person = ARGV[0]
+    msg = STDIN.readlines.join
+  else
+    puts "Usage: #{File.basename $0} address [msg|-] (stdin used if no msg)"
+    exit 1
+  end
+  xmpp_send(person,msg)
+  sleep 1
+  trikebot.disconnect
+end
