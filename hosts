@@ -4,17 +4,17 @@ option=$1
 name=$2
 
 case "$option" in
-  list)
+  list|l)
   if [ -z $name ]; then
     dscl localhost -list /Local/Default/Hosts
   else
     dscl localhost -list /Local/Default/Hosts | grep ${name:-.}
   fi
     ;;
-  add)
+  add|a)
     sudo dscl localhost -create /Local/Default/Hosts/${name}.local IPAddress 127.0.0.1
     ;;
-  delete)
+  delete|d)
     sudo dscl localhost -delete /Local/Default/Hosts/${name}.local
     ;;
   *)
