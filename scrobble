@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd ~/Code/scrobbletron
+./scrobbletron.rb run
