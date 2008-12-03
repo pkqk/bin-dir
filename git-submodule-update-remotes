@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+path=$1
+modules=`git submodule status ${path} 2> /dev/null | grep ^+ | cut -d' ' -f2`
+
+for m in $modules
+do
+  echo $m
+  new_url=`git config --file .gitmodules submodule.${m}.url`
+  pushd $m
+  git config remote.origin.url $new_url
+  git fetch origin
+  popd
+done
